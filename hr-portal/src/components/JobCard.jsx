@@ -1,12 +1,13 @@
 import "./JobCard.css";
 import { Link } from "react-router-dom";
 
-export default function JobCard({ job }) {
+
+export default function JobCard({ job, onClick }) {
   return (
-    <div className="job-card">
+    <div className="job-card" onClick={onClick}>
       <h3>{job.title}</h3>
       <p>{job.location} • {job.type}</p>
-      <Link to={`/apply/${job.id}`}>Apply →</Link>
+      <span>View Applications →</span>
     </div>
   );
 }

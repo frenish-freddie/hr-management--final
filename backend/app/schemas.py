@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, field_validator
-
+from datetime import date
+from typing import List, Dict, Any, Optional
 
 class RegisterUser(BaseModel):
     emp_id: str
@@ -8,13 +9,8 @@ class RegisterUser(BaseModel):
     password: str
     confirm_password: str
     role: str
-
-    @field_validator("email")
-    @classmethod
-    def email_must_be_aptivora(cls, v):
-        if not v.endswith("@aptivora.it"):
-            raise ValueError("Only @aptivora.it email allowed")
-        return v
+    seniority: Optional[str] = None
+    team_name: Optional[str] = None
 
     @field_validator("confirm_password")
     @classmethod
@@ -27,11 +23,6 @@ class RegisterUser(BaseModel):
 class LoginUser(BaseModel):
     emp_id: str
     password: str
-
-
-
-from pydantic import BaseModel
-from datetime import date
 
 class JobCreate(BaseModel):
     job_title: str
@@ -53,8 +44,6 @@ class JobResponse(BaseModel):
         from_attributes = True
 
 
-from pydantic import BaseModel, EmailStr
-from typing import Optional
 
 class ApplicationCreate(BaseModel):
     job_id: int
@@ -83,8 +72,6 @@ class ApplicationResponse(BaseModel):
 
 
 
-from pydantic import BaseModel
-from typing import List, Dict, Any, Optional
 
 class BankDetails(BaseModel):
     bank_name: str
@@ -99,7 +86,9 @@ class CompensationItem(BaseModel):
     bonus: float
     pf: float
     tax: float
+    advances: float = 0.0
     net_salary: float
+    payment_date: Optional[date] = None
     bank_details: BankDetails
      
 
@@ -116,12 +105,46 @@ class EmployeeManagementSchema(BaseModel):
         from_attributes = True
 
 
-class CompensationItem(BaseModel):
-    basic_salary: Optional[int] = 0
-    hra: Optional[int] = 0
-    allowances: Optional[int] = 0
-    bonus: Optional[int] = 0
-    pf: Optional[int] = 0
-    tax: Optional[int] = 0
-    net_salary: Optional[int] = 0
     bank_details: Optional[dict] = {}
+
+
+class RecentApplication(BaseModel):
+    name: str
+    job_title: str
+    applied_on: date
+
+class DashboardStats(BaseModel):
+    total_jobs: int
+    total_applications: int
+    total_junior_hrs: int
+    recent_applications: List[RecentApplication]
+
+
+class EmployeeFullResponse(BaseModel):
+    emp_id: str
+    name: str
+    email: EmailStr
+    role: str
+    seniority: Optional[str]
+    team_name: Optional[str]
+    management: Optional[EmployeeManagementSchema] = None
+
+    class Config:
+        from_attributes = True
+
+class EmployeeCreateFull(BaseModel):
+    emp_id: str
+    name: str
+    email: EmailStr
+    password: str
+    role: str
+    seniority: Optional[str] = None
+    team_name: Optional[str] = None
+    # Management fields
+    personal: Optional[dict] = None
+    employment: Optional[dict] = None
+    compensation: Optional[List[dict]] = []
+    attendance: Optional[dict] = None
+    assets: Optional[dict] = None
+    documents: Optional[dict] = None
+    exit_details: Optional[dict] = None

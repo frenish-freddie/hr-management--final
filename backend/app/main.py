@@ -1,30 +1,47 @@
-from fastapi import FastAPI
-from app.database import engine
-from app import models
-from app.auth import router as auth_router
-from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
-from app.database import get_db
-from app import models, schemas
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
+from typing import List, Dict, Any, Optional
 from fastapi.middleware.cors import CORSMiddleware
-
+from sqlalchemy.orm import Session
+from app.database import engine, get_db, Base
+from app import models, schemas
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from app.auth import router as auth_router
 
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Employee Login System")
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    import traceback
+    with open("crash_log.txt", "a") as f:
+        f.write(f"\n\nERROR: {str(exc)}\n")
+        f.write(traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={"message": "Internal Server Error", "detail": str(exc)},
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors(), "body": exc.body},
+    )
+
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",   # React
-        "http://localhost:5173",   # React
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173"
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
     ],
     allow_credentials=True,
-    allow_methods=["*"],  # GET, POST, PUT, DELETE
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -34,6 +51,33 @@ app.include_router(auth_router, prefix="/auth")
 @app.get("/")
 def home():
     return {"status": "Backend is running"}
+
+
+@app.get("/stats", response_model=schemas.DashboardStats)
+def get_stats(db: Session = Depends(get_db)):
+    total_jobs = db.query(models.Job).count()
+    total_applications = db.query(models.Application).count()
+    total_junior_hrs = db.query(models.Employee).filter(models.Employee.role == "junior_hr").count()
+
+    recent_apps = db.query(models.Application, models.Job.job_title)\
+        .join(models.Job, models.Application.job_id == models.Job.id)\
+        .order_by(models.Application.created_at.desc())\
+        .limit(5).all()
+
+    formatted_recent = [
+        schemas.RecentApplication(
+            name=app.name,
+            job_title=job_title,
+            applied_on=app.created_at.date()
+        ) for app, job_title in recent_apps
+    ]
+
+    return schemas.DashboardStats(
+        total_jobs=total_jobs,
+        total_applications=total_applications,
+        total_junior_hrs=total_junior_hrs,
+        recent_applications=formatted_recent
+    )
 
 
 @app.post("/jobs", response_model=schemas.JobResponse)
@@ -52,16 +96,24 @@ def create_job(job: schemas.JobCreate, db: Session = Depends(get_db)):
     return new_job
 
 
-@app.get("/jobs", response_model=list[schemas.JobResponse])
+@app.get("/jobs", response_model=List[schemas.JobResponse])
 def get_jobs(db: Session = Depends(get_db)):
     jobs = db.query(models.Job).all()
     return jobs
 
-
-from fastapi import UploadFile, File
-from app import schemas, models
-from fastapi import HTTPException
-
+@app.delete("/jobs/{job_id}")
+def delete_job(job_id: int, db: Session = Depends(get_db)):
+    job = db.query(models.Job).filter(models.Job.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Delete associated applications first
+    db.query(models.Application).filter(models.Application.job_id == job_id).delete(synchronize_session=False)
+    
+    # Delete the job
+    db.delete(job)
+    db.commit()
+    return {"message": "Job deleted successfully"}
 # 🔹 POST: Apply to a job
 @app.post("/applications/", response_model=schemas.ApplicationResponse)
 async def apply_job(
@@ -99,7 +151,7 @@ async def apply_job(
     return new_app
 
 # 🔹 GET: View applications for a job (HR)
-@app.get("/applications/{job_id}", response_model=list[schemas.ApplicationResponse])
+@app.get("/applications/{job_id}", response_model=List[schemas.ApplicationResponse])
 def get_applications(job_id: int, db: Session = Depends(get_db)):
     apps = db.query(models.Application).filter(models.Application.job_id == job_id).all()
     if not apps:
@@ -109,57 +161,86 @@ def get_applications(job_id: int, db: Session = Depends(get_db)):
 
 
 
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
+# --- Employee Management ---
 
-from app.database import get_db, engine, Base
-from app.models import EmployeeManagement
-from app.schemas import CompensationItem
+@app.get("/employees", response_model=List[schemas.EmployeeFullResponse])
+def get_all_employees(db: Session = Depends(get_db)):
+    employees = db.query(models.Employee).all()
+    return employees
 
-Base.metadata.create_all(bind=engine)
+@app.post("/employees/full", response_model=schemas.EmployeeFullResponse)
+def create_employee_full(user: schemas.EmployeeCreateFull, db: Session = Depends(get_db)):
+    from app.auth import hash_password
 
+    existing_id = db.query(models.Employee).filter(models.Employee.emp_id == user.emp_id).first()
+    if existing_id:
+        raise HTTPException(status_code=400, detail="Employee ID already exists")
 
+    existing_email = db.query(models.Employee).filter(models.Employee.email == user.email).first()
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email already registered")
 
-@app.post("/employee")
-def create_employee(db: Session = Depends(get_db)):
-    employee = EmployeeManagement()
-    db.add(employee)
+    new_user = models.Employee(
+        emp_id=user.emp_id,
+        name=user.name,
+        email=user.email,
+        password=hash_password(user.password),
+        role=user.role,
+        seniority=user.seniority,
+        team_name=user.team_name
+    )
+    db.add(new_user)
+    
+    mgmnt = models.EmployeeManagement(
+        emp_id=user.emp_id,
+        personal=user.personal or {},
+        employment=user.employment or {},
+        compensation=user.compensation or [],
+        assets=user.assets or {},
+        attendance=user.attendance or {},
+        documents=user.documents or {},
+        exit_details=user.exit_details or {}
+    )
+    db.add(mgmnt)
+    
     db.commit()
-    db.refresh(employee)
-    return employee
+    db.refresh(new_user)
+    return new_user
 
-
-@app.post("/employee/{emp_id}/compensation")
-def add_compensation(
-    emp_id: int,
-    new_comp: CompensationItem,
+@app.put("/employees/{emp_id}/management")
+def update_employee_management(
+    emp_id: str,
+    data: schemas.EmployeeManagementSchema,
     db: Session = Depends(get_db)
 ):
-    employee = db.query(EmployeeManagement).filter(EmployeeManagement.id == emp_id).first()
+    mgmnt = db.query(models.EmployeeManagement).filter(models.EmployeeManagement.emp_id == emp_id).first()
+    if not mgmnt:
+        raise HTTPException(status_code=404, detail="Employee management record not found")
 
-    if not employee:
-        raise HTTPException(status_code=404, detail="Employee not found")
-
-    # ✅ SAFETY
-    if employee.compensation is None:
-        employee.compensation = []
-
-    employee.compensation.append(new_comp.dict())
-
+    if data.personal is not None: mgmnt.personal = data.personal
+    if data.employment is not None: mgmnt.employment = data.employment
+    if data.compensation is not None: mgmnt.compensation = data.compensation
+    if data.attendance is not None: mgmnt.attendance = data.attendance
+    if data.assets is not None: mgmnt.assets = data.assets
+    if data.documents is not None: mgmnt.documents = data.documents
+    
     db.commit()
-    db.refresh(employee)
+    return {"message": "Employee management updated successfully"}
 
-    return {
-        "message": "Compensation added successfully",
-        "compensation": employee.compensation
-    }
-
-
-@app.get("/employee/{emp_id}")
-def get_employee(emp_id: int, db: Session = Depends(get_db)):
-    employee = db.query(EmployeeManagement).filter(EmployeeManagement.id == emp_id).first()
-
+@app.get("/employees/{emp_id}", response_model=schemas.EmployeeFullResponse)
+def get_employee_full(emp_id: str, db: Session = Depends(get_db)):
+    employee = db.query(models.Employee).filter(models.Employee.emp_id == emp_id).first()
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
-
     return employee
+
+@app.delete("/employees/batch")
+def delete_employees(emp_ids: List[str], db: Session = Depends(get_db)):
+    # 1. Delete management records
+    db.query(models.EmployeeManagement).filter(models.EmployeeManagement.emp_id.in_(emp_ids)).delete(synchronize_session=False)
+    
+    # 2. Delete employee records
+    count = db.query(models.Employee).filter(models.Employee.emp_id.in_(emp_ids)).delete(synchronize_session=False)
+    
+    db.commit()
+    return {"message": f"Successfully removed {count} employee(s)"}

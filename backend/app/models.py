@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime, Date, Float, ForeignKey, JSON
+from sqlalchemy.orm import relationship
 from app.database import Base
+from datetime import datetime
 
 class Employee(Base):
     __tablename__ = "employees"
@@ -10,8 +12,12 @@ class Employee(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
     role = Column(String, default="junior_hr")  # junior_hr / senior_hr
+    seniority = Column(String, nullable=True)
+    team_name = Column(String, nullable=True)
 
-from sqlalchemy import Column, Integer, String, Date, Float, ForeignKey
+    management = relationship("EmployeeManagement", backref="employee", uselist=False)
+
+
 
 class Job(Base):
     __tablename__ = "jobs"
@@ -22,10 +28,10 @@ class Job(Base):
     expected_close_date = Column(Date, nullable=False)
     budget = Column(Float, nullable=False)
     emp_id = Column(String, ForeignKey("employees.emp_id"))
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Float
-from sqlalchemy.orm import relationship
+
 
 class Application(Base):
     __tablename__ = "applications"
@@ -39,19 +45,19 @@ class Application(Base):
     experience = Column(Float)  # in years
     ctc = Column(Float)  # current salary
     expected_ctc = Column(Float)  # expected salary
+    created_at = Column(DateTime, default=datetime.utcnow)
 
     job = relationship("Job", backref="applications")  # optional ORM relationship
 
 
-from sqlalchemy import Column, Integer, DateTime, JSON
-from app.database import Base
-from datetime import datetime
+
 
 
 class EmployeeManagement(Base):
     __tablename__ = "employee_management"
 
     id = Column(Integer, primary_key=True, index=True)
+    emp_id = Column(String, ForeignKey("employees.emp_id"), unique=True, index=True)
 
     # -------- Personal --------
     personal = Column(

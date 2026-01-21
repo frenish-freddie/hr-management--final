@@ -10,6 +10,7 @@ export default function Register() {
     email: "",
     password: "",
     confirm_password: "",
+    role: "",
     seniority: ""
   });
 
@@ -27,7 +28,7 @@ export default function Register() {
     // 🔑 normalize before sending
     const normalizedForm = {
       ...form,
-      role: "hr",
+      role: form.role.toLowerCase().replace(/\s+/g, "_"),
       seniority: form.seniority
         .toLowerCase()
         .replace(/\s+/g, "_")
@@ -86,8 +87,15 @@ export default function Register() {
       />
 
       <input
+        name="role"
+        placeholder="Role (junior_hr / senior_hr)"
+        onChange={handleChange}
+        required
+      />
+
+      <input
         name="seniority"
-        placeholder="Seniority (Junior HR / HR Manager / Senior HR)"
+        placeholder="Seniority (Junior / Senior / Manager)"
         onChange={handleChange}
         required
       />

@@ -3,11 +3,16 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const role = localStorage.getItem("role");
 
-  const handleLogout = () => {
-    localStorage.removeItem("role");
-    navigate("/login");
+  const token = localStorage.getItem("token");
+  const seniority = localStorage.getItem("seniority") || "";
+
+  const isLoggedIn = !!token;
+  const isSenior = seniority.toLowerCase().includes("senior");
+
+  const logout = () => {
+    localStorage.clear();
+    navigate("/");
   };
 
   return (
@@ -16,20 +21,18 @@ export default function Navbar() {
 
       <div className="nav-links">
         <Link to="/">Home</Link>
-        <Link to="/jobs">Jobs</Link>
-         <Link to="/register" className="register-link">Register</Link>
 
-        {!role && <Link to="/login">Login</Link>}
-
-        {role === "hr" && <Link to="/hr">HR Dashboard</Link>}
-        {role === "employee" && (
-          <Link to="/employee">Employee Dashboard</Link>
-        )}
-
-        {role && (
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
+        {isLoggedIn ? (
+          <>
+            <button className="logout-btn" onClick={logout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </>
         )}
       </div>
     </nav>

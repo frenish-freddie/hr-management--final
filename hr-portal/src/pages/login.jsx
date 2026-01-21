@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login } from "../services/auth";
+import { login as loginUser } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 
@@ -14,21 +14,23 @@ export default function Login() {
     setError("");
 
     try {
-      const data = await login(empId, password);
+      const data = await loginUser(empId, password);
 
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("role", data.role);
+      localStorage.setItem("seniority", data.seniority || "");
+      localStorage.setItem("name", data.name || "");
+      localStorage.setItem("emp_id", data.emp_id || "");
 
-      if (data.role === "senior_hr") navigate("/hr");
-      else navigate("/employee");
-
+      // ✅ ALWAYS go to dashboard after login
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Login failed");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="login-form   ">
+    <form onSubmit={handleSubmit} className="login-form">
       <h1>Login</h1>
 
       {error && <p className="error">{error}</p>}
