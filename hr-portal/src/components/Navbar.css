@@ -1,49 +1,94 @@
 .navbar {
-  background: #9addf7;
-  padding: 16px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 24px 64px;
+  background: rgba(5, 5, 5, 0.6);
+  /* Semi-transparent black */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: fixed;
+  /* Fixed to stay on top */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.75rem;
   font-weight: 700;
-  font-size: 20px;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #FFFFFF 40%, rgba(255, 255, 255, 0.5) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Optional logo circle */
+.logo::before {
+  content: '';
+  display: block;
+  width: 12px;
+  height: 12px;
+  background-color: var(--primary-pink);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--primary-pink);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 40px;
 }
 
 .nav-links a {
-  margin-left: 20px;
+  color: var(--text-gray);
+  font-size: 0.95rem;
   font-weight: 500;
-  color: #374151;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .nav-links a:hover {
-  color: #319cdbe8;
+  color: var(--text-white);
 }
+
+/* Underline effect */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--primary-pink);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
 .logout-btn {
-  background: none;
-  border: none;
-  margin-left: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  color: #dc2626;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-white);
+  padding: 10px 24px;
+  border-radius: 99px;
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .logout-btn:hover {
-  text-decoration: underline;
-}
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.nav-links a {
-  padding: 6px 10px;
-  border-radius: 6px;
-}
-
-.nav-links a:hover {
-  background: #f1f5f9;
+  background: rgba(255, 46, 99, 0.1);
+  border-color: var(--primary-pink);
+  color: var(--primary-pink);
+  transform: translateY(-2px);
 }

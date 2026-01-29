@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
+import { usePermission } from "../hooks/usePermission";
 import { createEmployeeFull } from "../services/employees";
 import {
     User,
@@ -10,13 +11,15 @@ import {
     Monitor,
     FileText,
     LogOut,
-    Check
+    Check,
+    ShieldAlert
 } from "lucide-react";
 import "./AddEmployee.css";
 
 export default function AddEmployee() {
     const navigate = useNavigate();
     const { showToast } = useToast();
+    const { isSenior } = usePermission();
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("personal");
 
@@ -88,6 +91,12 @@ export default function AddEmployee() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Permission check: only seniors can add employees
+        if (!isSenior) {
+            showToast("You don't have permission to add employees", "error");
+            return;
+        }
 
         // Validation: email is required for the backend record
         if (!form.personal.work_email && !form.email) {
@@ -644,6 +653,22 @@ export default function AddEmployee() {
         <div className="add-employee-page">
             <header className="add-employee-header">
                 <h1>Add New Employee</h1>
+                {!isSenior && (
+                    <div className="permission-banner" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        backgroundColor: '#fef3c7',
+                        border: '1px solid #f59e0b',
+                        borderRadius: '8px',
+                        padding: '12px 16px',
+                        marginTop: '16px',
+                        color: '#92400e'
+                    }}>
+                        <ShieldAlert size={20} />
+                        <span>You don't have permission to add employees. You can view this form but cannot submit.</span>
+                    </div>
+                )}
             </header>
 
             <nav className="tabs-nav">

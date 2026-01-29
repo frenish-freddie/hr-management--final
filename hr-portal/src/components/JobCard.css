@@ -1,17 +1,86 @@
-.job-card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-}
+/* Base Card Styles - Dark Glassmorphism */
 .job-card,
 .stat-card,
 .profile-card,
 .emp-card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
+  background: rgba(30, 41, 59, 0.7);
+  /* Deep blue-grey transparency */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Specific overrides if needed, but keeping consistent for now */
+.job-card {
+  margin-bottom: 20px;
+}
+
+/* Hover Effects */
+.job-card:hover,
+.stat-card:hover,
+.profile-card:hover,
+.emp-card:hover {
+  background: rgba(30, 41, 59, 0.9);
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Typography inside cards */
+.job-card h3,
+.stat-card h3 {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.025em;
+}
+
+.job-card p,
+.stat-card p {
+  color: #cbd5e1;
+  /* Slate-300 */
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Action Link Styling */
+.job-card span {
+  display: inline-block;
+  color: #38bdf8;
+  /* Sky-400 */
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+}
+
+.job-card:hover span {
+  transform: translateX(4px);
+  color: #7dd3fc;
+  /* Sky-300 */
+}
+
+/* Gradient accent border on hover (optional premium touch) */
+.job-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.job-card:hover::before {
+  opacity: 1;
 }

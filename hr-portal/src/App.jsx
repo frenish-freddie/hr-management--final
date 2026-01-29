@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import DashboardLayout from "./components/DashboardLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Home from "./pages/Home";
+import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Dashboard from "./pages/Dashboard";
@@ -14,6 +14,9 @@ import JuniorHR from "./pages/JuniorHR";
 import AddEmployee from "./pages/AddEmployee";
 import EmployeeDetail from "./pages/EmployeeDetail";
 import Attendance from "./pages/Attendance";
+import ApplicationForm from "./pages/ApplicationForm";
+import NewsPage from "./pages/NewsPage";
+import FeaturesPage from "./pages/FeaturesPage";
 import { ToastProvider } from "./context/ToastContext";
 
 export default function App() {
@@ -24,6 +27,8 @@ export default function App() {
       <Routes>
         {/* PUBLIC */}
         <Route path="/home" element={<Home />} />
+        <Route path="/news" element={<NewsPage />} />
+        <Route path="/features" element={<FeaturesPage />} />
         <Route path="/login" element={<Login />} />
 
         {/* REGISTER (AUTH ONLY) */}
@@ -128,6 +133,9 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* PUBLIC: Job Application Form */}
+        <Route path="/apply/:jobId" element={<ApplicationForm />} />
 
         {/* FALLBACK */}
         <Route path="*" element={<Navigate to="/home" />} />

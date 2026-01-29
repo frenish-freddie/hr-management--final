@@ -1,14 +1,18 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const token = localStorage.getItem("token");
-  const seniority = localStorage.getItem("seniority") || "";
-
   const isLoggedIn = !!token;
-  const isSenior = seniority.toLowerCase().includes("senior");
+
+  // Don't show public navbar on dashboard pages
+  if (location.pathname.startsWith("/dashboard")) {
+    return null;
+  }
 
   const logout = () => {
     localStorage.clear();
@@ -16,14 +20,20 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar">
+    <motion.nav
+      className="navbar"
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2 className="logo">Aptivora</h2>
 
       <div className="nav-links">
-        <Link to="/">Home</Link>
+        <Link to="/home">Home</Link>
 
         {isLoggedIn ? (
           <>
+            <Link to="/dashboard">Dashboard</Link>
             <button className="logout-btn" onClick={logout}>
               Logout
             </button>
@@ -35,6 +45,6 @@ export default function Navbar() {
           </>
         )}
       </div>
-    </nav>
+    </motion.nav>
   );
 }

@@ -65,6 +65,7 @@ class ApplicationResponse(BaseModel):
     experience: float
     ctc: float
     expected_ctc: float
+    status: Optional[str] = "Applied"
 
     class Config:
         from_attributes = True

@@ -1,25 +1,110 @@
 .sidebar {
-  width: 240px;
-  padding: 32px 20px;
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(14px);
-  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  width: 280px;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.4);
+  /* Glassy Navy */
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  padding: 32px 24px;
+  z-index: 50;
+  position: relative;
 }
 
 .brand {
-  margin-bottom: 40px;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  margin-bottom: 48px;
+  background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-left: 12px;
 }
 
-.sidebar nav a {
-  display: block;
-  padding: 12px 14px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  color: #1f2937;
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.sidebar nav a:hover {
-  background: rgba(37, 99, 235, 0.1);
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  color: var(--text-slate);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-white);
+  transform: translateX(4px);
+}
+
+/* Active State - Updated to Aptivora Pink */
+.sidebar a.active {
+  background: rgba(255, 46, 99, 0.1);
+  color: var(--primary-pink);
+  font-weight: 600;
+  box-shadow: 0 0 0 1px rgba(255, 46, 99, 0.2);
+}
+
+.sidebar a.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 20px;
+  background-color: var(--primary-pink);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 8px var(--primary-pink);
+}
+
+/* Icon placeholders */
+.nav-icon {
+  opacity: 0.8;
+}
+
+.active .nav-icon {
+  opacity: 1;
+}
+
+/* Bottom Actions Section */
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.logout-btn {
+  width: 100%;
+  justify-content: flex-start;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 46, 99, 0.1);
+  color: var(--primary-pink);
+  border-color: rgba(255, 46, 99, 0.2);
+  transform: translateX(2px);
 }

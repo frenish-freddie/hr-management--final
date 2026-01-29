@@ -1,15 +1,11 @@
 import { Navigate } from "react-router-dom";
 
-export default function ProtectedRoute({ children, role }) {
+export default function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
-  const userSeniority = (localStorage.getItem("seniority") || "").toLowerCase();
 
   if (!token) return <Navigate to="/login" replace />;
 
-  // If role is required, check if user is "senior"
-  if (role && !userSeniority.includes("senior")) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
+  // All authenticated users can access all pages
+  // Permission restrictions are handled at the action level within each page
   return children;
 }

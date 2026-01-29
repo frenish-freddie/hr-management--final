@@ -1,0 +1,244 @@
+.features-section {
+    padding: 100px 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(20, 20, 25, 0.4) 100%);
+    overflow: hidden;
+}
+
+.features-header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 0 20px;
+}
+
+.section-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.section-subtitle {
+    color: var(--text-gray);
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+}
+
+.carousel-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 20px 0 60px;
+    /* Bottom padding for scrollbar or shadows */
+    display: flex;
+    justify-content: flex-start;
+    /* Hide scrollbar for cleaner look, but keep functionality */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.carousel-container::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+}
+
+.carousel-track {
+    display: flex;
+    gap: 32px;
+    padding: 0 5vw;
+    /* Side padding */
+}
+
+.feature-card {
+    min-width: 320px;
+    max-width: 320px;
+    background: rgba(30, 30, 35, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: transform 0.3s ease, background 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    background: rgba(40, 40, 45, 0.8);
+    border-color: rgba(255, 46, 99, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.card-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid currentColor;
+    /* Uses inline style color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.feature-card p {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.card-link {
+    background: transparent;
+    padding: 0;
+    text-align: left;
+    color: var(--text-white);
+    font-size: 0.9rem;
+    margin-top: 10px;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    opacity: 0.7;
+}
+
+.feature-card:hover .card-link {
+    opacity: 1;
+    color: var(--primary-pink);
+}
+
+/* Modal CSS for Features */
+.feature-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.feature-modal-content {
+    background: #18181b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 600px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.close-feature-modal {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: var(--text-gray);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.close-feature-modal:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.feature-modal-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.modal-icon-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.feature-modal-header h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.feature-modal-header p {
+    color: var(--text-gray);
+    font-size: 1.1rem;
+    max-width: 400px;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.feature-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 24px;
+    border-radius: 16px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.95rem;
+    color: var(--text-white);
+}
+
+.check-icon {
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.feature-modal-cta {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.feature-modal-cta:hover {
+    filter: brightness(1.1);
+}

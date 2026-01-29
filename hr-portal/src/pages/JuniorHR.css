@@ -12,35 +12,35 @@
 .page-header h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-white);
   margin-bottom: 0.5rem;
 }
 
 .page-header p {
-  color: #6b7280;
+  color: var(--text-gray);
 }
 
 .add-btn {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  background: var(--primary-pink);
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 46, 99, 0.3);
   transition: all 0.2s;
 }
 
 .add-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 6px 20px rgba(255, 46, 99, 0.4);
 }
 
 .loading {
   padding: 4rem;
   text-align: center;
-  color: #64748b;
+  color: var(--text-gray);
   font-size: 1.2rem;
 }
 
@@ -53,11 +53,13 @@
 
 .junior-card {
   position: relative;
-  background: white;
+  background: #18181b;
+  /* Dark card background */
   border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid #f3f4f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  border: 1px solid #333;
+  /* Subtler border */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
@@ -68,19 +70,21 @@
 
 .junior-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border-color: #3b82f6;
+  border-color: var(--primary-pink);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 }
 
 .junior-info h3 {
   font-size: 1.25rem;
   margin-bottom: 0.25rem;
-  color: #1f2937;
+  color: var(--text-white);
+  /* White text for headings */
 }
 
 .junior-info span {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-muted);
+  /* Muted gray for subtitles */
   display: block;
 }
 
@@ -95,7 +99,7 @@
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: #9ca3af;
+  color: var(--text-gray);
   display: block;
   margin-bottom: 0.25rem;
 }
@@ -103,13 +107,14 @@
 .stat-value {
   font-size: 1rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-white);
+  /* White for stats */
 }
 
 .view-link {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #2563eb;
+  color: var(--primary-pink);
   margin-top: auto;
 }
 
@@ -117,8 +122,8 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 5rem;
-  background: #f8fafc;
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 20px;
-  border: 2px dashed #e2e8f0;
-  color: #64748b;
+  border: 2px dashed #333;
+  color: var(--text-gray);
 }

@@ -52,6 +52,10 @@ app.include_router(auth_router, prefix="/auth")
 def home():
     return {"status": "Backend is running"}
 
+@app.get("/api/health")
+def health_check():
+    return {"status": "ok"}
+
 
 @app.get("/stats", response_model=schemas.DashboardStats)
 def get_stats(db: Session = Depends(get_db)):
@@ -158,7 +162,41 @@ def get_applications(job_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No applications found for this job")
     return apps
 
+# 🔹 GET: View ALL applications (for Candidate Status page)
+@app.get("/applications/all/list")
+def get_all_applications(db: Session = Depends(get_db)):
+    apps = db.query(models.Application, models.Job.job_title)\
+        .join(models.Job, models.Application.job_id == models.Job.id)\
+        .order_by(models.Application.created_at.desc())\
+        .all()
+    
+    result = []
+    for app, job_title in apps:
+        result.append({
+            "id": app.id,
+            "job_id": app.job_id,
+            "job_title": job_title,
+            "name": app.name,
+            "email": app.email,
+            "phone": app.phone,
+            "resume": app.resume,
+            "experience": app.experience,
+            "ctc": app.ctc,
+            "expected_ctc": app.expected_ctc,
+            "status": app.status or "Applied",
+            "created_at": app.created_at
+        })
+    return result
 
+# 🔹 PATCH: Update application status
+@app.patch("/applications/{app_id}/status")
+def update_application_status(app_id: int, status: str, db: Session = Depends(get_db)):
+    app = db.query(models.Application).filter(models.Application.id == app_id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    app.status = status
+    db.commit()
+    return {"message": "Status updated successfully", "new_status": status}
 
 
 # --- Employee Management ---

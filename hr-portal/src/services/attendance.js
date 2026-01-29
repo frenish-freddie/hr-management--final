@@ -8,5 +8,5 @@ export async function getAttendance(emp_id) {
     }
 
     const data = await res.json();
-    return data.attendance;
+    return data.management?.attendance;
 }

@@ -45,6 +45,7 @@ class Application(Base):
     experience = Column(Float)  # in years
     ctc = Column(Float)  # current salary
     expected_ctc = Column(Float)  # expected salary
+    status = Column(String, default="Applied")  # Applied, Screening, Interview, HR Round, Hired, Rejected
     created_at = Column(DateTime, default=datetime.utcnow)
 
     job = relationship("Job", backref="applications")  # optional ORM relationship

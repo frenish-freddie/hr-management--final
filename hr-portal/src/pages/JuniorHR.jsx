@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllEmployees, deleteEmployees } from "../services/employees";
+import { usePermission } from "../hooks/usePermission";
+import { useToast } from "../context/ToastContext";
 import "./JuniorHR.css";
 
 export default function JuniorHR() {
@@ -10,6 +12,8 @@ export default function JuniorHR() {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const navigate = useNavigate();
+  const { isSenior } = usePermission();
+  const { showToast } = useToast();
 
   const fetchEmployees = async () => {
     try {
@@ -61,7 +65,17 @@ export default function JuniorHR() {
         <h1>Employee Management</h1>
         <p>Monitor performance, attendance, and details of your entire team.</p>
         {!removeMode ? (
-          <button className="add-btn" style={{ backgroundColor: '#ef4444' }} onClick={() => setRemoveMode(true)}>
+          <button
+            className="add-btn"
+            style={{ backgroundColor: isSenior ? '#ef4444' : '#9ca3af', cursor: isSenior ? 'pointer' : 'not-allowed' }}
+            onClick={() => {
+              if (!isSenior) {
+                showToast("You don't have permission to remove employees", "error");
+                return;
+              }
+              setRemoveMode(true);
+            }}
+          >
             - Remove Employee
           </button>
         ) : (
@@ -88,11 +102,6 @@ export default function JuniorHR() {
               key={emp.emp_id}
               className={`junior-card ${selectedEmployees.includes(emp.emp_id) ? 'selected' : ''}`}
               onClick={() => removeMode ? toggleEmployeeSelection(emp.emp_id) : navigate(`/dashboard/employee-details/${emp.emp_id}`)}
-              style={{
-                cursor: 'pointer',
-                border: selectedEmployees.includes(emp.emp_id) ? '2px solid #ef4444' : '1px solid #e2e8f0',
-                backgroundColor: selectedEmployees.includes(emp.emp_id) ? '#fee2e2' : 'white'
-              }}
             >
               {removeMode && (
                 <div style={{
@@ -150,18 +159,19 @@ export default function JuniorHR() {
           zIndex: 1000
         }}>
           <div style={{
-            backgroundColor: 'white',
+            backgroundColor: '#18181b',
             borderRadius: '16px',
             padding: '32px',
             maxWidth: '450px',
             width: '90%',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+            border: '1px solid #333'
           }}>
             <div style={{
               width: '56px',
               height: '56px',
               borderRadius: '50%',
-              backgroundColor: '#fee2e2',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -174,13 +184,13 @@ export default function JuniorHR() {
               fontWeight: '700',
               textAlign: 'center',
               marginBottom: '12px',
-              color: '#1e293b'
+              color: 'white'
             }}>
               Remove Employees?
             </h2>
             <p style={{
               textAlign: 'center',
-              color: '#64748b',
+              color: '#9ca3af',
               marginBottom: '28px',
               fontSize: '1rem'
             }}>
@@ -196,9 +206,9 @@ export default function JuniorHR() {
                   flex: 1,
                   padding: '12px 24px',
                   borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
-                  backgroundColor: 'white',
-                  color: '#64748b',
+                  border: '1px solid #333',
+                  backgroundColor: 'transparent',
+                  color: 'white',
                   fontSize: '1rem',
                   fontWeight: '600',
                   cursor: 'pointer'
