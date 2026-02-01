@@ -15,7 +15,7 @@ export default function Dashboard() {
   const seniority = (localStorage.getItem("seniority") || "").toLowerCase();
 
   useEffect(() => {
-    fetch("http://localhost:8000/stats")
+    fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000"}/stats`)
       .then(res => res.json())
       .then(data => {
         setStats(data);

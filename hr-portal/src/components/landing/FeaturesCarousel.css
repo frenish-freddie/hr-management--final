@@ -226,19 +226,3 @@
     justify-content: center;
     flex-shrink: 0;
 }
-
-.feature-modal-cta {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 700;
-    color: white;
-    cursor: pointer;
-    transition: filter 0.2s;
-}
-
-.feature-modal-cta:hover {
-    filter: brightness(1.1);
-}

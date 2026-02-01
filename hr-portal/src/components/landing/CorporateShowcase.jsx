@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Building2, Users, Globe, TrendingUp } from "lucide-react";
+import { Building2, Users, Globe, TrendingUp, ShieldCheck, Headphones } from "lucide-react";
 import "./CorporateShowcase.css";
 
 export default function CorporateShowcase() {
@@ -12,7 +12,9 @@ export default function CorporateShowcase() {
         { icon: Building2, value: "500+", label: "Enterprise Clients" },
         { icon: Users, value: "2M+", label: "Active Users" },
         { icon: Globe, value: "50+", label: "Countries" },
-        { icon: TrendingUp, value: "99.9%", label: "Uptime SLA" }
+        { icon: TrendingUp, value: "99.9%", label: "Uptime SLA" },
+        { icon: ShieldCheck, value: "SOC 2", label: "Certified Security" },
+        { icon: Headphones, value: "24/7", label: "Expert Support" }
     ];
 
     return (

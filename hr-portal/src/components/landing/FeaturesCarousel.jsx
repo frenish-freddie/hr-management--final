@@ -161,9 +161,7 @@ export default function FeaturesCarousel() {
                                 ))}
                             </div>
 
-                            <button className="feature-modal-cta" style={{ background: selectedFeature.color }}>
-                                Get Started with {selectedFeature.title}
-                            </button>
+
                         </motion.div>
                     </div>
                 )}
