@@ -27,7 +27,7 @@ export default function CandidateStatus() {
 
   const fetchApplications = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/applications/all/list");
+      const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000"}/applications/all/list`);
       if (!response.ok) throw new Error("Failed to fetch applications");
       const data = await response.json();
       setApplications(data);
@@ -45,7 +45,7 @@ export default function CandidateStatus() {
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/applications/${appId}/status?status=${newStatus}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000"}/applications/${appId}/status?status=${newStatus}`, {
         method: "PATCH"
       });
       if (!response.ok) throw new Error("Failed to update status");
